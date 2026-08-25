@@ -47,4 +47,18 @@ npm run build
 ```bash
 npm install
 npm test
+npm run build:examples
 ```
+
+## Runnable example
+
+The `examples/basic.ts` program calls an already-running runtime. Configure its
+address, model, and prompt with `TRUSSIUM_URL`, `TRUSSIUM_MODEL`, and
+`TRUSSIUM_PROMPT`; it defaults to `http://127.0.0.1:9000`.
+
+```bash
+npm run build:examples
+TRUSSIUM_URL=http://127.0.0.1:9000 node dist-examples/basic.js
+```
+
+The example contains no credentials and does not start or host Trussium.
