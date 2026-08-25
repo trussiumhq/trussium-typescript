@@ -1,0 +1,13 @@
+export {
+  ApiError,
+  TrussiumClient,
+  type Capability,
+  type Capabilities,
+  type ChatChoice,
+  type ChatCompletion,
+  type ChatCompletionRequest,
+  type Message,
+  type Readiness,
+  type TokenUsage,
+  type TrussiumClientOptions,
+} from "./client.js";

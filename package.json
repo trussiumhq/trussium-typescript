@@ -1,0 +1,13 @@
+{
+  "name": "@trussium/sdk",
+  "version": "0.1.0",
+  "description": "Official TypeScript SDK for an existing Trussium runtime.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "README.md", "LICENSE"],
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "scripts": { "build": "tsc", "test": "npm run build && node --test test/client.test.mjs" },
+  "engines": { "node": ">=20" },
+  "devDependencies": { "typescript": "^5.9.0" }
+}
