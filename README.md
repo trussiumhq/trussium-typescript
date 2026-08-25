@@ -26,9 +26,19 @@ compatible fetch runtime.
 
 Releases use [semantic-release](https://github.com/semantic-release/semantic-release)
 on `main`. Conventional commits determine the semantic version, changelog, Git
-tag, GitHub release, and npm publication. The release workflow runs the build
-and tests first and requires the repository's `NPM_TOKEN`; GitHub supplies the
-`GITHUB_TOKEN`. npm provenance is enabled for published packages.
+tag, and GitHub release. npm publication is temporarily disabled until an
+`NPM_TOKEN` is configured; the release workflow still runs the build and tests
+and creates GitHub releases with `GITHUB_TOKEN`. When npm publication is
+enabled, npm provenance is already configured.
+
+Until the first npm publication, clone a tagged release and build it locally:
+
+```bash
+git clone https://github.com/trussiumhq/trussium-typescript.git
+cd trussium-typescript
+npm ci
+npm run build
+```
 
 ## Development
 
