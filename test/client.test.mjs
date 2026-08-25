@@ -36,3 +36,31 @@ test("readiness, capabilities, and API errors use stable responses", async () =>
     return true;
   });
 });
+
+test("additional capability methods use stable endpoint paths", async () => {
+  const paths = [];
+  const client = new TrussiumClient({
+    baseUrl: "http://runtime.test",
+    fetch: mockFetch((url) => {
+      paths.push(url.pathname);
+      return new Response('{"ok":true}');
+    }),
+  });
+  const payload = { model: "test" };
+  await client.embeddings(payload);
+  await client.moderations(payload);
+  await client.generateImage(payload);
+  await client.rerank(payload);
+  await client.createBatch(payload);
+  await client.getBatch("batch-1");
+  await client.cancelBatch("batch-1");
+  await client.createVideo(payload);
+  await client.getVideo("video-1");
+  await client.executeTool({ name: "echo", arguments: {} });
+  await client.transcribe({ model: "whisper", filename: "audio.wav", audio: new Blob(["audio"]) });
+  assert.deepEqual(paths, [
+    "/v1/embeddings", "/v1/moderations", "/v1/images/generations", "/v1/rerankings",
+    "/v1/batches", "/v1/batches/batch-1", "/v1/batches/batch-1/cancel", "/v1/videos",
+    "/v1/videos/video-1", "/v1/tools/executions", "/v1/audio/transcriptions",
+  ]);
+});

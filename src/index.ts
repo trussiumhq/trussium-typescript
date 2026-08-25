@@ -10,4 +10,6 @@ export {
   type Readiness,
   type TokenUsage,
   type TrussiumClientOptions,
+  type JsonPayload,
+  type TranscriptionRequest,
 } from "./client.js";
