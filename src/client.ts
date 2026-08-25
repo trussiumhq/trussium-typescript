@@ -38,6 +38,17 @@ export interface ChatCompletion {
 export interface Readiness { status: string }
 export interface Capability { name: string; description?: string }
 export interface Capabilities { capabilities: Capability[] }
+export type JsonPayload = Record<string, unknown>;
+
+export interface TranscriptionRequest {
+  model: string;
+  filename: string;
+  audio: Blob;
+  contentType?: string;
+  language?: string;
+  prompt?: string;
+  temperature?: number;
+}
 
 export class ApiError extends Error {
   readonly statusCode: number;
@@ -74,9 +85,65 @@ export class TrussiumClient {
     return this.request<Capabilities>("/v1/capabilities");
   }
 
-  private async request<T>(path: string, options: { method?: string; body?: string; requestId?: string } = {}): Promise<T> {
+  async embeddings(request: JsonPayload): Promise<JsonPayload> {
+    return this.request<JsonPayload>("/v1/embeddings", this.jsonOptions(request));
+  }
+
+  async moderations(request: JsonPayload): Promise<JsonPayload> {
+    return this.request<JsonPayload>("/v1/moderations", this.jsonOptions(request));
+  }
+
+  async generateImage(request: JsonPayload): Promise<JsonPayload> {
+    return this.request<JsonPayload>("/v1/images/generations", this.jsonOptions(request));
+  }
+
+  async rerank(request: JsonPayload): Promise<JsonPayload> {
+    return this.request<JsonPayload>("/v1/rerankings", this.jsonOptions(request));
+  }
+
+  async createBatch(request: JsonPayload): Promise<JsonPayload> {
+    return this.request<JsonPayload>("/v1/batches", this.jsonOptions(request));
+  }
+
+  async getBatch(batchId: string): Promise<JsonPayload> {
+    return this.request<JsonPayload>(`/v1/batches/${batchId}`);
+  }
+
+  async cancelBatch(batchId: string): Promise<JsonPayload> {
+    return this.request<JsonPayload>(`/v1/batches/${batchId}/cancel`, { method: "POST" });
+  }
+
+  async createVideo(request: JsonPayload): Promise<JsonPayload> {
+    return this.request<JsonPayload>("/v1/videos", this.jsonOptions(request));
+  }
+
+  async getVideo(videoId: string): Promise<JsonPayload> {
+    return this.request<JsonPayload>(`/v1/videos/${videoId}`);
+  }
+
+  async executeTool(request: JsonPayload): Promise<JsonPayload> {
+    return this.request<JsonPayload>("/v1/tools/executions", this.jsonOptions(request));
+  }
+
+  async transcribe(request: TranscriptionRequest): Promise<JsonPayload> {
+    const form = new FormData();
+    form.set("model", request.model);
+    form.set("file", request.audio, request.filename);
+    for (const [key, value] of Object.entries(request)) {
+      if (key !== "model" && key !== "audio" && key !== "filename" && value !== undefined) {
+        form.set(key, String(value));
+      }
+    }
+    return this.request<JsonPayload>("/v1/audio/transcriptions", { body: form });
+  }
+
+  private jsonOptions(request: JsonPayload): { method: string; body: string } {
+    return { method: "POST", body: JSON.stringify(request) };
+  }
+
+  private async request<T>(path: string, options: { method?: string; body?: BodyInit; requestId?: string } = {}): Promise<T> {
     const headers = new Headers({ Accept: "application/json" });
-    if (options.body) headers.set("Content-Type", "application/json");
+    if (typeof options.body === "string") headers.set("Content-Type", "application/json");
     if (options.requestId) headers.set("X-Request-ID", options.requestId);
     let response: Response;
     try {

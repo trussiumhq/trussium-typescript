@@ -17,8 +17,10 @@ const completion = await client.complete(
 );
 ```
 
-The foundation provides typed non-streaming chat completions, readiness,
-capability discovery, request-ID forwarding, and `ApiError` responses. It uses
+The SDK provides typed non-streaming chat completions, readiness, capability
+discovery, embeddings, moderation, image generation, transcription, reranking,
+batch jobs, video jobs, controlled tools, request-ID forwarding, and `ApiError`
+responses. It uses
 the host application's `fetch` implementation and requires Node 20 or a
 compatible fetch runtime.
 
