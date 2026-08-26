@@ -50,6 +50,13 @@ export interface TranscriptionRequest {
   temperature?: number;
 }
 
+export interface TranslationRequest {
+  model: string;
+  input: string[];
+  target_language: string;
+  source_language?: string;
+}
+
 export class ApiError extends Error {
   readonly statusCode: number;
   readonly code?: string;
@@ -99,6 +106,12 @@ export class TrussiumClient {
 
   async rerank(request: JsonPayload): Promise<JsonPayload> {
     return this.request<JsonPayload>("/v1/rerankings", this.jsonOptions(request));
+  }
+
+  async translate(request: TranslationRequest, requestId?: string): Promise<JsonPayload> {
+    return this.request<JsonPayload>("/v1/translations", {
+      method: "POST", body: JSON.stringify(request), requestId,
+    });
   }
 
   async createBatch(request: JsonPayload): Promise<JsonPayload> {

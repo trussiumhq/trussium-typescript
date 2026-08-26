@@ -51,6 +51,7 @@ test("additional capability methods use stable endpoint paths", async () => {
   await client.moderations(payload);
   await client.generateImage(payload);
   await client.rerank(payload);
+  await client.translate({ model: "test", input: ["Hello"], target_language: "fr" }, "translation-1");
   await client.createBatch(payload);
   await client.getBatch("batch-1");
   await client.cancelBatch("batch-1");
@@ -59,7 +60,7 @@ test("additional capability methods use stable endpoint paths", async () => {
   await client.executeTool({ name: "echo", arguments: {} });
   await client.transcribe({ model: "whisper", filename: "audio.wav", audio: new Blob(["audio"]) });
   assert.deepEqual(paths, [
-    "/v1/embeddings", "/v1/moderations", "/v1/images/generations", "/v1/rerankings",
+    "/v1/embeddings", "/v1/moderations", "/v1/images/generations", "/v1/rerankings", "/v1/translations",
     "/v1/batches", "/v1/batches/batch-1", "/v1/batches/batch-1/cancel", "/v1/videos",
     "/v1/videos/video-1", "/v1/tools/executions", "/v1/audio/transcriptions",
   ]);
