@@ -30,7 +30,7 @@
     "node": ">=20"
   },
   "devDependencies": {
-    "@types/node": "^26.6.2",
+    "@types/node": "^26.6.4",
     "semantic-release": "^25.0.9",
     "typescript": "^7.0.2"
   }
